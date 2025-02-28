@@ -1,0 +1,10 @@
+Deploying contract with account: 0xe1e5d870acD56fBE2ad2631807E0eb24A84C5961
+
+USDT deployed at: 0x4b61Df4dA7c04877113e772CeA1baE79Cf666926
+https://holesky.etherscan.io/address/0x4b61Df4dA7c04877113e772CeA1baE79Cf666926#code
+
+USDC deployed at: 0x1D4112A50DbED80743b098442D990AF293B45817
+https://holesky.etherscan.io/address/0x1D4112A50DbED80743b098442D990AF293B45817#code
+
+DAI deployed at: 0xB0b2C79E89bDDaA13932aAF2006c88757D456e49
+https://holesky.etherscan.io/address/0xB0b2C79E89bDDaA13932aAF2006c88757D456e49#code
