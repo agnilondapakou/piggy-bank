@@ -31,6 +31,14 @@ contract PiggyBank {
         // tokens[0xB0b2C79E89bDDaA13932aAF2006c88757D456e49] = true;
     }
 
+    function allowTokens(address _tokenAddress) external returns (bool) {
+        if(_tokenAddress == address(0)) revert InvalidAddress(_tokenAddress);
+
+        tokens[_tokenAddress] = true;
+
+        return true;
+    }
+
     function saveToken(address _bankAddress, address _tokenAddress, uint256 _amount) external OnlyOwner returns (bool) {
         if(_bankAddress == address(0)) revert InvalidAddress(_bankAddress);
         if(_tokenAddress == address(0)) revert InvalidAddress(_tokenAddress);
@@ -49,7 +57,7 @@ contract PiggyBank {
         if(_bankAddress == address(0)) revert InvalidAddress(_bankAddress);
         if(_tokenAddress == address(0)) revert InvalidAddress(_tokenAddress);
 
-        uint256 balance = ERC20(_tokenAddress).balanceOf(owner);
+        uint256 balance = ERC20(_tokenAddress).balanceOf(_bankAddress);
 
         if(duration > block.timestamp) {
             uint256 amount = (balance * 15) / 100;
