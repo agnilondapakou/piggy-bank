@@ -2,7 +2,6 @@ import {
   time,
   loadFixture,
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
-import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
 import hre from "hardhat";
 
@@ -13,7 +12,7 @@ describe("PiggyBank", function () {
 
     const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 
-    const [owner] = await hre.ethers.getSigners();
+    const [owner, manager] = await hre.ethers.getSigners();
 
     const Token = await hre.ethers.getContractFactory("ERC20");
 
@@ -21,9 +20,9 @@ describe("PiggyBank", function () {
     const usdtTokenAddress = usdtToken.target;
 
     const Piggybank = await hre.ethers.getContractFactory("PiggyBank");
-    const piggybank = await Piggybank.deploy(lockedTime);
+    const piggybank = await Piggybank.deploy(lockedTime, owner);
 
-    return { piggybank, owner, ADDRESS_ZERO, usdtToken, usdtTokenAddress };
+    return { piggybank, owner, ADDRESS_ZERO, usdtToken, usdtTokenAddress, manager };
   }
 
   describe("Deployment", function () {
@@ -58,9 +57,9 @@ describe("PiggyBank", function () {
 
   describe("Withdray tokens", function () {
     it("Should withdraw tokens when the saving duration is not arrived", async function () {
-      const { piggybank, owner, usdtToken, usdtTokenAddress } = await loadFixture(deployPiggyBankFixture);
+      const { piggybank, owner, usdtToken, usdtTokenAddress, manager } = await loadFixture(deployPiggyBankFixture);
 
-      await piggybank.allowTokens(usdtTokenAddress);
+      await piggybank.connect(manager).allowTokens(usdtTokenAddress);
 
       await usdtToken.mint(owner.address, 1000);
 
@@ -76,9 +75,9 @@ describe("PiggyBank", function () {
     });
 
     it("Should withdraw tokens when the saving duration is arrived", async function () {
-      const { piggybank, owner, usdtToken, usdtTokenAddress } = await loadFixture(deployPiggyBankFixture);
+      const { piggybank, owner, usdtToken, usdtTokenAddress, manager } = await loadFixture(deployPiggyBankFixture);
 
-      await piggybank.allowTokens(usdtTokenAddress);
+      await piggybank.connect(manager).allowTokens(usdtTokenAddress);
 
       await usdtToken.mint(owner.address, 1000);
 

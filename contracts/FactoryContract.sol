@@ -5,6 +5,8 @@ import "./PiggyBank.sol";
 
 contract FactoryContract {
 
+    address public admin;
+
     mapping(address => address[]) public kolos;
     mapping(address => bool) public kolosStatus;
 
@@ -18,11 +20,21 @@ contract FactoryContract {
     error KoloNotFound();
     error KoloDestroyed();
     error KoloAlreadyDestroyed();
+    error NotAuthorized(address );
+
+    modifier OnlyAdmin() {
+        if(admin != msg.sender) revert NotAuthorized(msg.sender);
+        _;
+    }
+
+    constructor() {
+        admin = msg.sender;
+    }
 
     function createPiggyBank(uint256 _duration, bytes32 _salt) external returns (address) {
         if (_duration <= 0) revert ZeroDuration();
 
-        address piggyBankAddress = address(new PiggyBank{salt: _salt}(_duration));
+        address piggyBankAddress = address(new PiggyBank{salt: _salt}(_duration, msg.sender));
 
         if (piggyBankAddress == address(0)) revert DeploymentFailed();
 
@@ -84,6 +96,14 @@ contract FactoryContract {
         if(isAvailable == true) {
             if(kolosStatus[_koloAddress] == false) revert KoloAlreadyDestroyed();
         }
+
+        return true;
+    }
+
+    function approveTokens(address _tokenAddress) external OnlyAdmin() returns (bool) {
+        if(_tokenAddress == address(0)) revert InvalidAddress();
+
+        PiggyBank(admin).allowTokens(_tokenAddress);
 
         return true;
     }

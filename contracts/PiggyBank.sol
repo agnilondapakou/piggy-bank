@@ -6,6 +6,7 @@ import "./ERC20.sol";
 contract PiggyBank {
 
     address public owner;
+    address public manager;
     uint256 public duration;
     mapping(address => bool) public tokens;
 
@@ -18,13 +19,14 @@ contract PiggyBank {
     event Transfer(address _owner, address _bankAddress, uint256 _amount);
     event Receive(address _owner, address _bankAddress, uint256 _amount);
 
-    modifier OnlyOwner() {
-        if(owner != msg.sender) revert UnAuthorize(msg.sender);
+    modifier OnlyManager() {
+        if(manager != msg.sender) revert UnAuthorize(msg.sender);
         _;
     }
 
-    constructor(uint256 _duration) {
-        owner = msg.sender;
+    constructor(uint256 _duration, address _owner) {
+        manager = msg.sender;
+        owner = _owner;
         duration = _duration;
     }
 
@@ -36,7 +38,7 @@ contract PiggyBank {
         return true;
     }
 
-    function saveToken(address _bankAddress, address _tokenAddress, uint256 _amount) external OnlyOwner returns (bool) {
+    function saveToken(address _bankAddress, address _tokenAddress, uint256 _amount) external OnlyManager returns (bool) {
         if(_bankAddress == address(0)) revert InvalidAddress(_bankAddress);
         if(_tokenAddress == address(0)) revert InvalidAddress(_tokenAddress);
         if(_amount <= 0) revert InvaldAmount(_amount);
@@ -50,7 +52,7 @@ contract PiggyBank {
         return true;
     }
 
-    function withdrawToken(address _bankAddress, address _tokenAddress) external OnlyOwner returns (bool) {
+    function withdrawToken(address _bankAddress, address _tokenAddress) external OnlyManager returns (bool) {
         if(_bankAddress == address(0)) revert InvalidAddress(_bankAddress);
         if(_tokenAddress == address(0)) revert InvalidAddress(_tokenAddress);
 
