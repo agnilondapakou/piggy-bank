@@ -26,9 +26,6 @@ contract PiggyBank {
     constructor(uint256 _duration) {
         owner = msg.sender;
         duration = _duration;
-        // tokens[0x4b61Df4dA7c04877113e772CeA1baE79Cf666926] = true;
-        // tokens[0x1D4112A50DbED80743b098442D990AF293B45817] = true;
-        // tokens[0xB0b2C79E89bDDaA13932aAF2006c88757D456e49] = true;
     }
 
     function allowTokens(address _tokenAddress) external returns (bool) {
